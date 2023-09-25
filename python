@@ -1,0 +1,3 @@
+Migrations for 'products':
+  products\migrations\0013_alter_lessonview_date_of_last_view.py
+    - Alter field date_of_last_view on lessonview

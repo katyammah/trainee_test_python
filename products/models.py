@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
+
 
 
 class Lesson(models.Model):
@@ -42,19 +45,20 @@ class LessonView(models.Model):
 
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     lesson = models.ForeignKey(to=Lesson, on_delete=models.CASCADE)
-    veiw_time_in_seconds = models.IntegerField()
+    view_time_in_seconds = models.IntegerField(default=0)
     status = models.CharField(max_length=20, default=IS_NOT_WATCHED, blank=True)
+    date_of_last_view = models.DateTimeField(default=datetime.now)
 
     def save(self, *args, **kwargs):
         lesson_duration = self.lesson.duration_in_seconds
-        if (lesson_duration - self.veiw_time_in_seconds) / lesson_duration <= 0.2:
+        if (lesson_duration - self.view_time_in_seconds) / lesson_duration <= 0.2:
             self.status = self.IS_WATCHED
         else:
             self.status = self.IS_NOT_WATCHED
+        if self.view_time_in_seconds > lesson_duration:
+            self.view_time_in_seconds = lesson_duration
+        self.date_of_last_view = datetime.now()
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f'Просмотр урока {self.lesson} пользователем {self.user}'
-
-
-
