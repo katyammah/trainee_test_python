@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-
 class Lesson(models.Model):
     title = models.CharField(max_length=100)
     external_link = models.URLField()
